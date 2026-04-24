@@ -1,34 +1,29 @@
-# ML Project — [Название проекта]
+# ML Project — Electricity Load Forecasting
 
-**Студент:** [ФИО / Student ID]
+**Студент:** Денисова Алиса Евгеньевна
 
-**Группа:** [Группа]
-
+**Группа:** БИВ231
 
 ## Оглавление
 
 1. [Описание задачи](#описание-задачи)
 2. [Структура репозитория](#структура-репозитория)
-3. [Запуски](#быстрый-старт)
+3. [Запуск](#запуск)
 4. [Данные](#данные)
 5. [Результаты](#результаты)
-7. [Отчёт](#отчёт)
-
+6. [Отчёт](#отчёт)
 
 ## Описание задачи
 
-<!-- Кратко опишите задачу: что предсказываем, какой датасет, метрика качества -->
+**Задача:** регрессия (прогноз почасового спроса на электроэнергию)
 
-**Задача:** [Классификация / Регрессия / Кластеризация / ...]
+**Датасет:** [Electricity Load Forecasting (Kaggle)](https://www.kaggle.com/datasets/saurabhshahane/electricity-load-forecasting)
 
-**Датасет:** [Название и источник датасета]
-
-**Целевая метрика:** [Accuracy / F1 / RMSE / ...]
-
+**Целевая метрика:** `MAE` (основная), `RMSE` (дополнительная)
 
 ## Структура репозитория
-Опишите структуру проекта, сохранив при этом верхнеуровневые папки. Можно добавить новые при необходимости.
-```
+
+```text
 .
 ├── data
 │   ├── processed               # Очищенные и обработанные данные
@@ -41,23 +36,28 @@
 ├── presentation                # Презентация для защиты
 ├── report
 │   ├── images                  # Изображения для отчёта
-│   └── report.md               # Финальный отчёт
+│   ├── report.md               # Финальный отчёт
+│   ├── data_summary.json
+│   └── experiments.csv
 ├── src
 │   ├── preprocessing.py        # Предобработка данных
-│   └── modeling.py             # Обучение и оценка моделей
+│   ├── modeling.py             # Обучение и оценка моделей
+│   ├── data_tools.py           # утилиты по данным
+│   └── settings.py             # пути и константы
 ├── tests
 │   └── test.py                 # Тесты пайплайна
 ├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
 └── README.md
 ```
 
 ## Запуск
 
-Этот блок замените способом запуска вашего сервиса.
 ```bash
 # 1. Клонировать репозиторий
-git clone <url>
-cd <repo-name>
+git clone https://github.com/hsemlcourse/hseml-group-project-denisovaae.git
+cd hseml-group-project-denisovaae
 
 # 2. Создать виртуальное окружение
 python -m venv .venv
@@ -66,20 +66,47 @@ source .venv/bin/activate   # Linux/macOS
 
 # 3. Установить зависимости
 pip install -r requirements.txt
+
+# 4. Получить исходный датасет вручную
+# Источник: https://www.kaggle.com/datasets/saurabhshahane/electricity-load-forecasting
+# Положить файл под именем:
+# data/raw/electricity_load.csv
+#
+# Или запустить скрипт:
+python src/download_data.py
+
+# 5. Подготовка данных
+python src/preprocessing.py
+
+# 6. Обучение и эксперименты
+python src/modeling.py
+```
+
+Запуск через Docker:
+
+```bash
+docker compose up --build
 ```
 
 ## Данные
+
 - `data/raw/` — исходные файлы
 - `data/processed/` — предобработанные данные
-
+- Основной файл для запуска пайплайна: `data/raw/electricity_load.csv`
+- Временной split: 70% / 15% / 15% без shuffle
 
 ## Результаты
-Здесь коротко выпишите результаты.
-| Модель | [Метрика 1] | [Метрика 2] | Примечание |
-|--------|-------------|-------------|------------|
-| Baseline | — | — | |
-| Лучшая модель | — | — | |
 
+Сводка чистки и признаков: `report/data_summary.json`  
+Таблица экспериментов: `report/experiments.csv`  
+Графики EDA: `report/images/*.png`  
+Лучшая модель: `models/best_model.joblib`  
+Метаданные лучшей модели: `report/best_model_info.json`
+
+| Модель              | Val MAE | Test MAE | Примечание      |
+| ------------------- | ------- | -------- | --------------- |
+| baseline_raw_linear | 114.78  | 137.17   | baseline без FE |
+| xgb_small           | 15.61   | 22.35    | лучшая модель   |
 
 ## Отчёт
 

@@ -1,0 +1,23 @@
+{
+  "initial_rows": 48048,
+  "initial_columns": 17,
+  "final_rows": 48017,
+  "final_columns": 24,
+  "duplicates_removed": 0,
+  "missing_target_rows_removed": 0,
+  "outliers_removed": 7,
+  "datetime_column": "datetime",
+  "target_column": "nat_demand",
+  "added_features": [
+    "hour",
+    "day_of_week",
+    "month",
+    "is_weekend",
+    "lag_1",
+    "lag_24",
+    "rolling_mean_24"
+  ],
+  "train_rows": 33611,
+  "val_rows": 7203,
+  "test_rows": 7203
+}

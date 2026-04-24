@@ -1,0 +1,4 @@
+{
+  "best_model": "xgb_small",
+  "selection_metric": "val_mae"
+}
