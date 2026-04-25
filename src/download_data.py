@@ -4,7 +4,9 @@ import shutil
 import subprocess
 import sys
 import zipfile
+
 import requests
+
 from settings import RAW_DATA_PATH
 
 
@@ -13,6 +15,7 @@ def save_from_url(url, out_path):
     response = requests.get(url, timeout=120)
     response.raise_for_status()
     out_path.write_bytes(response.content)
+
 
 def resolve_kaggle_command():
     cli = shutil.which('kaggle')
@@ -23,6 +26,7 @@ def resolve_kaggle_command():
     if probe.returncode == 0:
         return module_cmd
     return None
+
 
 def save_from_kaggle(dataset, out_path):
     base_cmd = resolve_kaggle_command()
@@ -56,6 +60,7 @@ def save_from_kaggle(dataset, out_path):
             shutil.rmtree(file_path, ignore_errors=True)
     temp_dir.rmdir()
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--url', type=str, default='')
@@ -68,7 +73,9 @@ def main():
         return
     try:
         save_from_kaggle(args.dataset, args.out)
-    except RuntimeError as err:raise SystemExit(1)
+    except RuntimeError as err:
+        print(f'Ошибка загрузки: {err}')
+        raise SystemExit(1) from err
     print(f'Файл: {args.out}')
 
 
