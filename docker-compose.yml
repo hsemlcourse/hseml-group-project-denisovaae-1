@@ -1,0 +1,8 @@
+version: '3.9'
+services:
+  cp1-train:
+    build: .
+    container_name: hseml_deni_cp1
+    volumes:
+      - .:/app
+    command: sh -c "python src/preprocessing.py && python src/modeling.py"
