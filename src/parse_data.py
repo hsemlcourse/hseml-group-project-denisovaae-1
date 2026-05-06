@@ -1,5 +1,5 @@
-from datetime import datetime
 import csv
+import datetime
 
 import pandas as pd
 
@@ -39,7 +39,7 @@ def _parse_datetime(value):
         return None
     for fmt in ('%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M', '%Y-%m-%dT%H:%M:%S', '%d.%m.%Y %H:%M'):
         try:
-            return datetime.strptime(text, fmt)
+            return datetime.datetime.strptime(text, fmt)
         except ValueError:
             continue
     parsed = pd.to_datetime(text, errors='coerce')
