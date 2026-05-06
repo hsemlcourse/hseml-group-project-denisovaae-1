@@ -1,9 +1,6 @@
 import csv
 import datetime
 
-import pandas as pd
-
-
 DATETIME_CANDIDATES = (
     'datetime',
     'Datetime',
@@ -32,6 +29,8 @@ def _detect_dialect(sample_text):
 
 
 def _parse_datetime(value):
+    import pandas as pd
+
     if value is None:
         return None
     text = str(value).strip()
@@ -49,6 +48,8 @@ def _parse_datetime(value):
 
 
 def parse_csv_dataset(path):
+    import pandas as pd
+
     if not path.exists():
         raise FileNotFoundError(f'missing file: {path}')
 
