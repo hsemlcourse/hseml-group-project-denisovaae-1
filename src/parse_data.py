@@ -1,5 +1,5 @@
-import csv
 from datetime import datetime
+import csv
 
 import pandas as pd
 
