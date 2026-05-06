@@ -9,6 +9,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
 from xgboost import XGBRegressor
 
 from data_tools import get_target
@@ -70,6 +71,54 @@ def build_models():
     }
 
 
+def build_tuned_models(x_train, y_train):
+    tscv = TimeSeriesSplit(n_splits=4)
+    rf_search = RandomizedSearchCV(
+        estimator=RandomForestRegressor(random_state=RANDOM_STATE, n_jobs=-1),
+        param_distributions={
+            'n_estimators': [200, 300, 400],
+            'max_depth': [10, 14, 18, None],
+            'min_samples_split': [2, 4, 8],
+            'min_samples_leaf': [1, 2, 4],
+            'max_features': ['sqrt', None],
+        },
+        n_iter=10,
+        scoring='neg_mean_absolute_error',
+        cv=tscv,
+        random_state=RANDOM_STATE,
+        n_jobs=-1,
+    )
+    rf_search.fit(x_train, y_train)
+
+    xgb_search = RandomizedSearchCV(
+        estimator=XGBRegressor(
+            random_state=RANDOM_STATE,
+            n_jobs=-1,
+            objective='reg:squarederror',
+        ),
+        param_distributions={
+            'n_estimators': [180, 260, 340],
+            'learning_rate': [0.04, 0.06, 0.08],
+            'max_depth': [4, 5, 6],
+            'subsample': [0.8, 0.9, 1.0],
+            'colsample_bytree': [0.8, 0.9, 1.0],
+            'reg_lambda': [1.0, 3.0, 6.0],
+            'min_child_weight': [1, 3, 5],
+        },
+        n_iter=12,
+        scoring='neg_mean_absolute_error',
+        cv=tscv,
+        random_state=RANDOM_STATE,
+        n_jobs=-1,
+    )
+    xgb_search.fit(x_train, y_train)
+
+    return {
+        'rf_random_search': rf_search.best_estimator_,
+        'xgb_random_search': xgb_search.best_estimator_,
+    }
+
+
 def main():
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
@@ -93,6 +142,7 @@ def main():
 
     rows = []
     models = build_models()
+    models.update(build_tuned_models(x_train, y_train))
     best_model_name = ''
     best_valid_mae = float('inf')
 

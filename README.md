@@ -48,6 +48,8 @@
 ├── tests
 │   └── test.py                 # Тесты пайплайна
 ├── requirements.txt
+├── Makefile
+├── .pre-commit-config.yaml
 ├── Dockerfile
 ├── docker-compose.yml
 └── README.md
@@ -81,6 +83,17 @@ python src/preprocessing.py
 
 # 6. Обучение и эксперименты
 python src/modeling.py
+
+# 7. Проверка линтером
+ruff check src tests
+
+# 8. Альтернативно через Makefile
+make lint
+
+# 9. Установка pre-commit хуков
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files
 ```
 
 Запуск через Docker:
@@ -104,10 +117,16 @@ docker compose up --build
 Лучшая модель: `models/best_model.joblib`  
 Метаданные лучшей модели: `report/best_model_info.json`
 
-| Модель              | Val MAE | Test MAE | Примечание      |
-| ------------------- | ------- | -------- | --------------- |
-| baseline_raw_linear | 114.78  | 137.17   | baseline без FE |
-| xgb_small           | 15.61   | 22.35    | лучшая модель   |
+| Модель              | Val MAE | Test MAE | Примечание                               |
+| ------------------- | ------- | -------- | ---------------------------------------- |
+| baseline_raw_linear | 114.78  | 137.17   | baseline без FE                          |
+| xgb_small           | 15.81   | 22.26    | сильный ручной baseline                  |
+| xgb_random_search   | 15.63   | 21.80    | лучший результат после тюнинга           |
+
+В `src/modeling.py` добавлен системный подбор гиперпараметров:
+- `RandomizedSearchCV` + `TimeSeriesSplit` для `RandomForestRegressor`
+- `RandomizedSearchCV` + `TimeSeriesSplit` для `XGBRegressor`
+- результаты сохраняются в `report/experiments.csv`
 
 ## Отчёт
 
