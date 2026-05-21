@@ -1,4 +1,4 @@
 {
-  "best_model": "xgb_small",
+  "best_model": "xgb_random_search",
   "selection_metric": "val_mae"
 }

@@ -1,7 +1,8 @@
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
+
+from parse_data import parse_csv_dataset
 
 
 def get_target(df):
@@ -37,6 +38,4 @@ def get_datetime(df):
 
 
 def load_csv(path: Path):
-    if not path.exists():
-        raise FileNotFoundError(f'missing file: {path}')
-    return pd.read_csv(path)
+    return parse_csv_dataset(path)
