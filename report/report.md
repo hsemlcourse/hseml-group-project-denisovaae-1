@@ -111,12 +111,40 @@
 
 ---
 
-## 8. Деплой (на CP3 будет :-D )
+## 8. Деплой
 
-- **Интерфейс:** если требуется по задаче (Streamlit, Telegram-бот и т.д.)
-- **API:** FastAPI или аналог - описание эндпоинтов, примеры запросов
-- **Скриншоты** работы интерфейса/API
-- **Ссылка на видео** демонстрации работы
+**FastAPI** + **Streamlit**
+
+После `python src/preprocessing.py` и `python src/modeling.py` появляется `models/best_model.joblib`
+
+**FastAPI** (`src/api/app.py`):
+
+```bash
+cd src
+uvicorn api.app:app --reload --host 127.0.0.1 --port 8000
+```
+
+**Streamlit** (`app/streamlit_app.py`):
+
+```bash
+streamlit run app/streamlit_app.py --server.port 8501
+```
+
+Интерфейс: http://127.0.0.1:8501
+
+### Скриншоты
+
+Форма и прогноз:
+
+![Streamlit](images/demo.png)
+
+Swagger:
+
+![FastAPI docs](images/docs.png)
+
+### Видео
+
+Демонстрация: [Запись](https://drive.google.com/file/d/1U9IhpJEECvbePEjDA5m_3TYYLkIJr6Go/view?usp=sharing)
 
 ---
 
@@ -131,7 +159,6 @@
 - **Возможные улучшения:**
   - расширить подбор гиперпараметров
   - добавить улучшенную интерпретацию
-  - реализовать деплой
 
 ---
 

@@ -34,6 +34,8 @@
 │   ├── 01_eda.ipynb            # EDA
 │   ├── 02_baseline.ipynb       # Baseline-модель
 │   └── 03_experiments.ipynb    # Эксперименты и ablation study
+├── app
+│   └── streamlit_app.py        # UI деплоя
 ├── presentation                # Презентация для защиты
 ├── report
 │   ├── images                  # Изображения для отчёта
@@ -41,6 +43,9 @@
 │   ├── data_summary.json
 │   └── experiments.csv
 ├── src
+│   ├── api
+│   │   └── app.py              # FastAPI
+│   ├── inference.py            # загрузка модели и predict
 │   ├── preprocessing.py        # Предобработка данных
 │   ├── modeling.py             # Обучение и оценка моделей
 │   ├── data_tools.py           # утилиты по данным
@@ -101,6 +106,32 @@ pre-commit run --all-files
 ```bash
 docker compose up --build
 ```
+
+### Деплой (CP3)
+
+Нужны обученная модель и processed-данные:
+
+```bash
+python src/preprocessing.py
+python src/modeling.py
+```
+
+**FastAPI**:
+
+```bash
+cd src
+uvicorn api.app:app --reload --host 127.0.0.1 --port 8000
+```
+
+Swagger: http://127.0.0.1:8000/docs
+
+**Streamlit** (из корня проекта):
+
+```bash
+streamlit run app/streamlit_app.py --server.port 8501
+```
+
+Интерфейс: http://127.0.0.1:8501
 
 ## Данные
 
